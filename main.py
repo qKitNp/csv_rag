@@ -16,6 +16,7 @@ from server_config import (
 )
 
 from models import QueryRequest, FileResponse
+from query_response import generate_response
 
 app = FastAPI()
 
@@ -57,8 +58,8 @@ async def list_files():
 @app.post("/query")
 async def query_file_endpoint(request: QueryRequest):
     try:
-        response = await query_document(request.file_id, request.query)
-        return {"response": response}
+        response = await generate_response(request.file_id, request.query)
+        return {"response": str(response)}
     except DocumentNotFoundError:
         raise HTTPException(status_code=404, detail="File not found")
     except Exception as e:
